@@ -28,13 +28,20 @@ def main():
     Задержка устанавливается в секундах.
     ''')
     parser.add_argument('-d', '--directory', default='nasa_apod')
-    parser.add_argument('-t', '--delay', default=3600)
+    parser.add_argument('-t', '--delay')
     args = parser.parse_args()
 
     load_dotenv('TELEGRAMM_TOKEN.env')
     bot_token = os.environ['TELEGRAMM_KEY']
 
-    auto_post(bot_token, args.directory, args.delay)
+    load_dotenv('POST_DELAY.env')
+    post_delay = os.environ['post_delay']
+    delay = args.delay
+
+    if not args.delay:
+        delay = int(post_delay)
+
+    auto_post(bot_token, args.directory, int(delay))
 
 
 if __name__ == '__main__':
