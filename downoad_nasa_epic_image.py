@@ -2,10 +2,11 @@ from photo_download import image_download
 import argparse
 import requests
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 
 
-
-def get_epic_image(photo_count):
+def get_epic_image(token, photo_count):
     url = 'https://epic.gsfc.nasa.gov/api/natural'
     response = requests.get(url)
     photo_url = []
@@ -17,7 +18,7 @@ def get_epic_image(photo_count):
         if index == photo_count:
             break
 
-    payload = {'api_key': 'd9ALoN7WsSlhZBwbEbbDnN2HPtJmeEDbgztm1yK3'}
+    payload = {'api_key': token}
 
     urls = []
     for data, photo_id in photo_url:
@@ -40,7 +41,10 @@ def main():
     parser.add_argument('-f', '--file_name', default='spacex_fetch')
     parser.add_argument('-p', '--photo_name', default='spacex')
     args = parser.parse_args()
-    image_download(get_epic_image(args.count_photo), args.file_name, args.photo_name)
+
+    load_dotenv('NASA_TOKEN.env')
+    token = os.environ['NASA_KEY']
+    image_download(get_epic_image(token, args.count_photo), args.file_name, args.photo_name)
 
 
 if __name__ == '__main__':
