@@ -7,10 +7,13 @@ import telegram
 
 def telegramm_photo_post(token, chat_id, directory, path):
     bot = telegram.Bot(token=token)
-    if path is None:
-        path = random.choices(os.listdir('nasa_apod'))
-    bot.send_document(chat_id=chat_id, document=open(f'{directory}/{path[0]}', 'rb'))
-    print(path)
+    if path:
+        name_photo = os.listdir(directory)[path]
+    else:
+        name_photo = random.choices(os.listdir(directory))[0]
+
+    with open(f'{directory}/{name_photo}', 'rb') as photo:
+        bot.send_document(chat_id=chat_id, document=photo)
 
 
 def main():
@@ -28,6 +31,8 @@ def main():
 
     load_dotenv('TELEGRAMM_TOKEN.env')
     token = os.environ['TELEGRAMM_KEY']
+    if args.directory is None:
+        args.directory = 'nasa_apod'
 
     telegramm_photo_post(token, args.id_chat, args.directory, args.path)
 
