@@ -8,11 +8,11 @@ import telegram
 
 def telegramm_photo_post(token, chat_id, path):
     bot = telegram.Bot(token=token)
+    with open(path, 'rb') as name_photo:
+        bot.send_document(chat_id=chat_id, document=name_photo)
 
-    bot.send_document(chat_id=chat_id, document=open(path, 'rb'))
 
-
-def get_photo_path(bot_token,chat_id, directory, delay):
+def get_photo_location(bot_token,chat_id, directory, delay):
     file = os.listdir(directory)
     file_number = len(file)
     index = 0
@@ -49,7 +49,7 @@ def main():
         delay = file_delay.read()
         file_delay.close()
 
-    get_photo_path(bot_token,args.chat_id, args.directory, int(delay))
+    get_photo_location(bot_token,args.chat_id, args.directory, int(delay))
 
 
 if __name__ == '__main__':
