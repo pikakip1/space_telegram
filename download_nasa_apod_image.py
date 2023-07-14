@@ -10,8 +10,9 @@ def nasa_apod_image(nasa_token, count=1):
     payload = {'api_key': nasa_token, 'count': count}
     url = f'https://api.nasa.gov/planetary/apod?'
     response = requests.get(url, params=payload)
+    response.raise_for_status()
 
-    return [apod_json['hdurl'] for apod_json in response.json()]
+    return [reply['hdurl'] for reply in response.json()]
 
 
 def main():
@@ -28,7 +29,10 @@ def main():
 
     load_dotenv('NASA_TOKEN.env')
     nasa_token = os.environ['NASA_KEY']
-    image_download(nasa_apod_image(nasa_token, args.photo_count), args.file_name, args.photo_name)
+
+    nasa_apod_urls = nasa_apod_image(nasa_token, args.photo_count)
+    for nasa_apod_url in nasa_apod_urls:
+        image_download(nasa_apod_url, args.file_name, args.photo_name)
 
 
 if __name__ == '__main__':
