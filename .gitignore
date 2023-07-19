@@ -1,6 +1,6 @@
-NASA_TOKEN.env
-TELEGRAMM_TOKEN.env
+TOKENS.env
 POST_DELAY.txt
+.idea
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
