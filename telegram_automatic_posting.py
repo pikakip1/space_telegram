@@ -33,7 +33,7 @@ def main():
 
     parser.add_argument('chat_id')
     parser.add_argument('-d', '--directory', default='nasa_apod')
-    parser.add_argument('-t', '--delay', default=3)
+    parser.add_argument('-t', '--delay', default=3600)
     args = parser.parse_args()
 
     load_dotenv('TOKENS.env')
