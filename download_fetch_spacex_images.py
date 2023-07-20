@@ -1,6 +1,7 @@
 from photo_download import image_download
 import requests
 import argparse
+import os
 
 
 def fetch_spacex_last_launch(launch_id):
@@ -10,18 +11,19 @@ def fetch_spacex_last_launch(launch_id):
     spacex_response.raise_for_status()
     launch_information = spacex_response.json()
 
-    if not isinstance(launch_information, list):
-        launch_information = [launch_information]
+    try:
+        return launch_information['links']['flickr']['original']
 
-    for i in reversed(launch_information):
-        photo_launch = i['links']['flickr']['original']
-        if photo_launch:
-            print(f'Был загружен запуск {i["id"]}')
-            return photo_launch
+    except TypeError:
+        for reply in reversed(launch_information):
+            photo_launch = reply['links']['flickr']['original']
+            if photo_launch:
+                print(f'Был загружен крайний запуск: {reply["id"]}')
+                return photo_launch
 
 
-def main():
-    parser = argparse.ArgumentParser(argument_default='5eb87ce7ffd86e000604b33b', description='''
+def set_args():
+    parser = argparse.ArgumentParser(description='''
         Программа скачивает все фото последнего запуска по умолчанию, если не был передан
         аргумент с директорией нужного запуска.\n
         Аргумент --launch_id, отвечает за id полета(по умолчанию крайний полет).\n
@@ -29,14 +31,22 @@ def main():
         Аргумент --photo_name, отвечает за название фото(по умолчанию spacex)
     ''')
 
-    parser.add_argument('-id', '--launch_id')
+    parser.add_argument('-id', '--launch_id', default='')
     parser.add_argument('-f', '--file_name', default='spacex_fetch')
     parser.add_argument('-p', '--photo_name', default='spacex')
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def main():
+    args = set_args()
     spacex_urls = fetch_spacex_last_launch(args.launch_id)
+
+    os.makedirs(args.file_name, exist_ok=True)
+    number_photo = len(os.listdir(args.file_name))
+
     for spacex_url in spacex_urls:
-        image_download(spacex_url, args.file_name, args.photo_name)
+        image_download(spacex_url, args.file_name, args.photo_name, number_photo)
+        number_photo += 1
 
 
 if __name__ == '__main__':

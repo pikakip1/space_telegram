@@ -26,7 +26,7 @@ def fetch_nasa_epic_images(token, photos_number):
             return photo_urls
 
 
-def main():
+def set_argument():
     parser = argparse.ArgumentParser(description='''
         Программа скачивает определенное количество epic фотографий из nasa, на основе
         переданного аргумента.
@@ -38,14 +38,22 @@ def main():
     parser.add_argument('-c', '--count_photo', default=3)
     parser.add_argument('-f', '--file_name', default='epic_nasa')
     parser.add_argument('-p', '--photo_name', default='epic')
-    args = parser.parse_args()
+    return parser.parse_args()
 
+
+def main():
+    args = set_argument()
     load_dotenv('TOKENS.env')
     token = os.environ['NASA_KEY']
 
     nasa_epic_urls = fetch_nasa_epic_images(token, args.count_photo)
+
+    os.makedirs(args.file_name, exist_ok=True)
+    number_photo = len(os.listdir(args.file_name))
+
     for nasa_epic_url in nasa_epic_urls:
-        image_download(nasa_epic_url, args.file_name, args.photo_name)
+        image_download(nasa_epic_url, args.file_name, args.photo_name, number_photo)
+        number_photo += 1
 
 
 if __name__ == '__main__':

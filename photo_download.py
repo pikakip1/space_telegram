@@ -13,11 +13,9 @@ def get_extension(url):
     return enlargement
 
 
-def image_download(url, img_path, img_name):
-    os.makedirs(img_path, exist_ok=True)
+def image_download(url, img_path, img_name, number_photo):
     response = requests.get(url)
     enlargement = get_extension(url)
-    number_photo = len(os.listdir(img_path))
 
     with open(f'{img_path}/{img_name}{number_photo}{enlargement}', 'wb') as file:
         file.write(response.content)
