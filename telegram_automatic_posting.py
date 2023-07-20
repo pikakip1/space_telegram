@@ -17,7 +17,7 @@ def telegramm_photo_post(bot_token, chat_id, directory, delay):
 
     while True:
         for index, photo in enumerate(files):
-            telegramm_photo_post(bot_token, chat_id, f'{directory}/{files[index]}')
+            bot_sending_photo(bot_token, chat_id, f'{directory}/{files[index]}')
             sleep(delay)
         random.shuffle(files)
 
@@ -31,7 +31,7 @@ def main():
         Задержка устанавливается в секундах.
     ''')
 
-    parser.add_argument('chat_id')
+    parser.add_argument('-chat_id', default='@cosmo_photos')
     parser.add_argument('-d', '--directory', default='nasa_apod')
     parser.add_argument('-t', '--delay', default=3600)
     args = parser.parse_args()
